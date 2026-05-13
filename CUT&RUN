@@ -1,0 +1,14 @@
+# create a bedtools environment
+conda create -n cutrun -c bioconda -c conda-forge bedtools
+
+# activate the environment
+conda activate cutrun
+
+# use bedtools intersect to obtain the gff annotations for the CUT&RUN peaks
+# -a: CUT&RUN peak data
+# -b: genome gff3 annotation
+# -wo: prints the full entry from A and B as well as the number of bp overlap
+bedtools intersect \
+  -a ../gene_x_binding_sites.bed \
+  -b ../genes.gff3 \
+  -wo > binding_results.txt
