@@ -6,8 +6,8 @@ The variant calling BASH commands are documented here:
 [Variant Calling](Variant%20Calling)
 
 ## Differential Expression
-The R differential expression analysis is available as a rendered HTML report:
-[DE Analysis](https://htmlpreview.github.io/?https://github.com/freyjaredmond/LIFE750/blob/main/de.html)
+The R differential expression analysis is available as a HTML report:
+[DE Analysis](https://freyjaredmond.github.io/LIFE750/de.html)
 
 ## CUT&RUN
 The CUT&RUN bash script and Python analysis are documented here:
