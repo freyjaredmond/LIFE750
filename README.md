@@ -7,7 +7,7 @@ The variant calling BASH commands are documented here:
 
 ## Differential Expression
 The R differential expression analysis is available as a HTML report:
-[DE Analysis](https://freyjaredmond.github.io/LIFE750/de2.Rmd)
+[DE Analysis](https://freyjaredmond.github.io/LIFE750/de2.html)
 
 ## CUT&RUN
 The CUT&RUN bash script and Python analysis are documented here:
