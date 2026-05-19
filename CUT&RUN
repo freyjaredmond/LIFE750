@@ -1,3 +1,4 @@
+## BASH script
 # create a bedtools environment
 conda create -n cutrun -c bioconda -c conda-forge bedtools
 
@@ -12,3 +13,47 @@ bedtools intersect \
   -a ../gene_x_binding_sites.bed \
   -b ../genes.gff3 \
   -wo > binding_results.txt
+
+### Python script to remove the decoy peaks and create a table of selected information
+import pandas as pd
+data=pd.read_csv("binding_results", sep="\t", header=None)
+print(data.head())
+#only select gff gene annotations (will have duplications for each gene i.e mRNA, exon)
+data_filtered=data[data[6]=="gene"]
+print(data_filtered.head())
+#how many genes are there
+print(len(data_filtered))
+#filter out decoy peaks
+data_nodecoy=data_filtered[~data_filtered[3].str.contains("decoy")]
+print(len(data_nodecoy))
+
+#clean up the gene names
+data_nodecoy[12]=data_nodecoy[12].str.split(";").str[0]
+# select the columns of interest
+data_subset = data_nodecoy[[1, 2, 3, 12, 13]]
+#rename columns
+data_subset.columns = ["Start Position of Peak", "End Position of Peak", "Peak", "Gene", "Base pair overlap"]
+print(data_subset)
+
+#save the tsv
+data_subset.to_csv("Cutrun_results.tsv", sep="\t", index=False)
+
+
+###Python script to cross-reference the differential expression data to the CUT&RUN table
+import pandas as pd
+#read in the differential expression results and the CUT&RUN table
+de= pd.read_csv("all_DEGs.tsv", sep="\t")
+cut= pd.read_csv("Cutrun_results.tsv", sep="\t")
+print(len(cut))
+#clean the gene id
+cut["Gene"]=cut["Gene"].str.split("=").str[1]
+#merge the de data
+joined = pd.merge(de, cut, left_on="gene_id", right_on="Gene", how="inner")
+#drop unneccessary columns
+joined=joined.drop(["baseMean","lfcSE","stat","pvalue"], axis=1)
+#sort columns in desired order
+joined = joined[["Peak", "log2FoldChange", "padj", "Start Position of Peak", "End Position of Peak", "Base pair overlap"]]
+#round the LFC
+joined["log2FoldChange"] = joined["log2FoldChange"].round(2)
+#save the tsv
+joined.to_csv("deandcut.tsv", sep="\t")
